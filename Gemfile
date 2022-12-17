@@ -25,6 +25,7 @@ gem 'paranoia'
 gem 'psych'
 gem 'rgeo'
 gem 'rgeo-activerecord'
+gem "typhoeus", "~> 1.4"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
@@ -58,3 +59,4 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
+

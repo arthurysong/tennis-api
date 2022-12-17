@@ -30,7 +30,7 @@ class TennisCourt < ApplicationRecord
   end
 
   def self.create_from_results(results)
-    import map_results_to_params(results), validate_uniqueness: true
+    import map_results_to_params(results)
   end
 
   def self.map_results_to_params(results)
