@@ -6,6 +6,8 @@ require 'httparty'
 
 class GooglePlacesService
   @textsearch_url = 'https://maps.googleapis.com/maps/api/place/textsearch/json'
+  @nearbysearch_url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
+  @placedetails_url = 'https://maps.googleapis.com/maps/api/place/details/json'
 
   def self.query_courts(lat, long, next_page_token = nil)
     data = textsearch_call(lat, long, next_page_token)
@@ -38,8 +40,6 @@ class GooglePlacesService
     hydra.queue(req)
     req.on_complete do |r|
       data = JSON.parse(r.body)
-      # debugger
-      # puts data
       TennisCourt.create_from_results(data['results'])
 
       if data['next_page_token']
@@ -61,6 +61,28 @@ class GooglePlacesService
     Typhoeus::Request.new(@textsearch_url, params: params)
   end
 
+  def self.create_nearby_req(lat, long, next_page_token)
+    params = {
+      pagetoken: next_page_token,
+      location: "#{lat},#{long}",
+      rankby: 'distance',
+      keyword: 'tennis courts',
+      key: ENV['GOOGLE_API_KEY']
+    }
+
+    Typhoeus::Request.new(@nearbysearch_url, params: params)
+  end
+
+  def self.create_place_details_req(place_id)
+    params = {
+      fields: 'name,geometry,formatted_address',
+      place_id: place_id,
+      key: ENV['GOOGLE_API_KEY']
+    }
+
+    Typhoeus::Request.new(@placedetails_url, params: params)
+  end
+
   attr_accessor :results
 
   def initialize
@@ -69,7 +91,7 @@ class GooglePlacesService
   end
 
   def add_request_to_hydra(lat, long, next_page_token = nil)
-    req = self.class.create_req(lat, long, next_page_token)
+    req = self.class.create_nearby_req(lat, long, next_page_token)
 
     @hydra.queue(req)
     req.on_complete do |r|

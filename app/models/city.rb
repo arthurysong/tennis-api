@@ -7,8 +7,8 @@ class City < ApplicationRecord
 
   def self.map_results_to_params(city_array)
     city_array.map do |city|
-      { lat: city[0],
-        long: city[1],
+      { lat: city[1],
+        long: city[0],
         name: city[2].titlecase,
         state: city[3] }
     end

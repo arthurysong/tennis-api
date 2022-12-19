@@ -70,3 +70,4 @@ production:
   database: tennis_api_production
   username: tennis_api
   password: <%= ENV["TENNIS_API_DATABASE_PASSWORD"] %>
+  adapter: postgis # TODO Add this to prod

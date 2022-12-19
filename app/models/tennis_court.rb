@@ -30,7 +30,7 @@ class TennisCourt < ApplicationRecord
   end
 
   def self.create_from_results(results)
-    import map_results_to_params(results)
+    import map_results_to_params(results), on_duplicate_key_update: { conflict_target: [:id], columns: [:address] }
   end
 
   def self.map_results_to_params(results)

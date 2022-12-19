@@ -3,42 +3,42 @@
 class TennisCourtsMigrator
   # STATES = [%w[Alabama AL]].freeze
   STATES = [
-    # %w[Alabama AL]
-    # %w[Alaska AK],
-    # %w[Arizona AZ],
-    # %w[Arkansas AR],
-    # %w[California CA],
-    # %w[Colorado CO],
-    # %w[Connecticut CT],
-    # %w[Delaware DE],
-    # %w[Florida FL],
-    # %w[Georgia GA],
-    # %w[Hawaii HI],
-    # %w[Idaho ID],
-    # %w[Illinois IL],
-    # %w[Indiana IN],
-    # %w[Iowa IA],
-    # %w[Kansas KS],
-    # %w[Kentucky KY],
-    # %w[Louisiana LA],
-    # %w[Maine ME],
-    # %w[Maryland MD],
-    # %w[Massachusetts MA],
-    # %w[Michigan MI],
-    # %w[Minnesota MN],
-    # %w[Mississippi MS],
-    # %w[Missouri MO],
-    # %w[Montana MT],
-    # %w[Nebraska NE],
-    # %w[Nevada NV],
-    # ['New Hampshire', 'NH'],
-    # ['New Jersey', 'NJ'],
-    # ['New Mexico', 'NM'],
-    # ['New York', 'NY'],
-    # ['North Carolina', 'NC'],
-    # ['North Dakota', 'ND'],
-    # %w[Ohio OH],
-    # %w[Oklahoma OK]
+    %w[Alabama AL],
+    %w[Alaska AK],
+    %w[Arizona AZ],
+    %w[Arkansas AR],
+    %w[California CA],
+    %w[Colorado CO],
+    %w[Connecticut CT],
+    %w[Delaware DE],
+    %w[Florida FL],
+    %w[Georgia GA],
+    %w[Hawaii HI],
+    %w[Idaho ID],
+    %w[Illinois IL],
+    %w[Indiana IN],
+    %w[Iowa IA],
+    %w[Kansas KS],
+    %w[Kentucky KY],
+    %w[Louisiana LA],
+    %w[Maine ME],
+    %w[Maryland MD],
+    %w[Massachusetts MA],
+    %w[Michigan MI],
+    %w[Minnesota MN],
+    %w[Mississippi MS],
+    %w[Missouri MO],
+    %w[Montana MT],
+    %w[Nebraska NE],
+    %w[Nevada NV],
+    ['New Hampshire', 'NH'],
+    ['New Jersey', 'NJ'],
+    ['New Mexico', 'NM'],
+    ['New York', 'NY'],
+    ['North Carolina', 'NC'],
+    ['North Dakota', 'ND'],
+    %w[Ohio OH],
+    %w[Oklahoma OK],
     %w[Oregon OR],
     %w[Pennsylvania PA],
     ['Rhode Island', 'RI'],
@@ -92,19 +92,10 @@ class TennisCourtsMigrator
 
   def self.migrate_tennis_courts_in_usa
     STATES.each do |state|
-      state_input = state[0].downcase.gsub(' ', '-')
-      state_two_letter = state[1]
-
-      cities = ScrapeService.get_cities(state_input)
-
-      geo = GeocoderService.new
-      cities.each { |city| geo.create_and_add_request_to_hydra(city, state_two_letter) }
-      geo.run_hydra
-
+      cities = City.where(state: state[1])
       google = GooglePlacesService.new
-      geo.results.each do |result|
-        lat, long = result
-        google.add_request_to_hydra(lat, long)
+      cities.each do |city|
+        google.add_request_to_hydra(city.lat, city.long)
       end
 
       google.run_hydra
