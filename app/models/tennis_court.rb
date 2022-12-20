@@ -2,6 +2,7 @@
 
 class TennisCourt < ApplicationRecord
   has_paper_trail
+  acts_as_paranoid
 
   enum court_type: %i[hard clay grass synthetic]
 

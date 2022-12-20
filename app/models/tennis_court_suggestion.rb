@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class TennisCourtSuggestion < TennisCourt
-  acts_as_paranoid
-
   belongs_to :version, class_name: 'PaperTrail::Version', optional: true
   belongs_to :master, class_name: 'TennisCourt', optional: true
 
